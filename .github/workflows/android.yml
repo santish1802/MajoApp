@@ -34,10 +34,11 @@ jobs:
       - name: Compilar APK de depuración
         run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
 
-      - name: Guardar APK para descargar
+      - name: Guardar APK directamente
         uses: actions/upload-artifact@v7
         with:
           name: app-debug
-          path: app/build/outputs/apk/debug/*.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          archive: false
           if-no-files-found: error
           retention-days: 7
