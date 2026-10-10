@@ -1,9 +1,7 @@
-name: Compilar APK Android
+name: Compilar APK firmado
 
 on:
   push:
-    branches: ["main", "master"]
-  pull_request:
     branches: ["main", "master"]
   workflow_dispatch:
 
@@ -16,7 +14,7 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Descargar el código
+      - name: Descargar código
         uses: actions/checkout@v6
 
       - name: Configurar Java
@@ -25,20 +23,48 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - name: Configurar Gradle y caché
+      - name: Configurar Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      - name: Dar permiso de ejecución a Gradle
-        run: chmod +x gradlew
+      - name: Recuperar clave de firma
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "Falta configurar el secreto KEYSTORE_BASE64"
+            exit 1
+          fi
+          umask 077
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/release.jks"
+          test -s "$RUNNER_TEMP/release.jks"
 
-      - name: Compilar APK de depuración
-        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+      - name: Compilar APK firmado
+        env:
+          KEYSTORE_PATH: ${{ runner.temp }}/release.jks
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          test -n "$KEYSTORE_PASSWORD"
+          test -n "$KEY_ALIAS"
+          test -n "$KEY_PASSWORD"
+          chmod +x gradlew
+          ./gradlew :app:assembleRelease --no-daemon --stacktrace
+
+      - name: Comprobar firma del APK
+        run: |
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -name apksigner -type f | sort -V | tail -n 1)"
+          "$APKSIGNER" verify --verbose app/build/outputs/apk/release/app-release.apk
 
       - name: Guardar APK directamente
         uses: actions/upload-artifact@v7
         with:
-          name: app-debug
-          path: app/build/outputs/apk/debug/app-debug.apk
+          name: app-release
+          path: app/build/outputs/apk/release/app-release.apk
           archive: false
           if-no-files-found: error
           retention-days: 7
+
+      - name: Eliminar clave temporal
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.jks"

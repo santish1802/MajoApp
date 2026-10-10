@@ -13,10 +13,25 @@ android {
         versionName = "1.2-boleta58"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
+    val ciKeystorePath = System.getenv("KEYSTORE_PATH")
+
+    if (!ciKeystorePath.isNullOrBlank()) {
+        signingConfigs {
+            create("ciRelease") {
+                storeFile = file(ciKeystorePath)
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            if (!ciKeystorePath.isNullOrBlank()) {
+                signingConfig = signingConfigs.getByName("ciRelease")
+            }
         }
     }
     compileOptions {
