@@ -1,0 +1,13 @@
+<resources>
+    <style name="Theme.MajoApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/majo_coffee</item>
+        <item name="colorPrimaryVariant">@color/majo_coffee</item>
+        <item name="colorOnPrimary">@android:color/white</item>
+        <item name="android:windowBackground">@color/majo_background</item>
+    </style>
+    <style name="Theme.MajoApp.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/majo_coffee</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/majo4</item>
+        <item name="postSplashScreenTheme">@style/Theme.MajoApp</item>
+    </style>
+</resources>

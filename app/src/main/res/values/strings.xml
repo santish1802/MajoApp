@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">MajoApp</string>
+    <string name="loading_page">Cargando página</string>
+    <string name="load_error">No se pudo cargar la página. Comprueba tu conexión e inténtalo de nuevo.</string>
+    <string name="retry">Reintentar</string>
+    <string name="unsupported_link">No se puede abrir este enlace.</string>
+</resources>

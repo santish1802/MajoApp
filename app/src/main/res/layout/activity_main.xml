@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/majo_background">
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
+        android:layout_width="match_parent" android:layout_height="match_parent">
+        <WebView android:id="@+id/webView"
+            android:layout_width="match_parent" android:layout_height="match_parent" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <ProgressBar android:id="@+id/pageProgress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent" android:layout_height="3dp"
+        android:layout_gravity="top" android:padding="0dp"
+        android:minHeight="3dp" android:maxHeight="3dp"
+        android:max="100" android:progress="0" android:indeterminate="false"
+        android:progressTint="@color/majo_coffee"
+        android:progressBackgroundTint="@android:color/transparent"
+        android:visibility="gone" />
+    <FrameLayout android:id="@+id/loadingPanel"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:background="@color/majo_coffee"
+        android:clickable="true" android:focusable="true">
+        <ImageView android:layout_width="288dp" android:layout_height="288dp"
+            android:layout_gravity="center" android:src="@drawable/majo4"
+            android:importantForAccessibility="no" />
+        <ProgressBar android:layout_width="40dp" android:layout_height="40dp"
+            android:layout_gravity="center" android:translationY="160dp"
+            android:indeterminateTint="@color/majo_background"
+            android:contentDescription="@string/loading_page" />
+    </FrameLayout>
+    <LinearLayout android:id="@+id/errorPanel"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:orientation="vertical" android:gravity="center"
+        android:padding="32dp" android:background="@color/majo_background"
+        android:visibility="gone">
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/load_error" android:gravity="center"
+            android:textSize="18sp" android:textColor="@color/majo_coffee" />
+        <Button android:id="@+id/retryButton"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:layout_marginTop="24dp" android:text="@string/retry" />
+    </LinearLayout>
+</FrameLayout>

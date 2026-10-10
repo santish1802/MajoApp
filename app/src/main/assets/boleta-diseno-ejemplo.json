@@ -1,0 +1,56 @@
+{
+  "id": 6707,
+  "fecha_pedido": "2026-10-08 17:31:00",
+  "total": "46.50",
+  "descuento": "0.00",
+  "notas": null,
+  "estado": "completado",
+  "ubicacion": "",
+  "metodo_pago": "TARJETA",
+  "boleta_numero": "B008-00000028",
+  "boleta_fecha_emision": "2026-10-08",
+  "boleta_hora_emision": "17:31:00",
+  "boleta_cliente_nombre": "GABRIELA MARITA MATTOS RIVERA",
+  "boleta_cliente_documento": "43813271",
+  "boleta_cliente_direccion": "CALLE GABRIELA MISTRAL 240 URB. LA CALERA DE LA MERCED SURQUILLO LIMA LIMA",
+  "op_gravadas": "39.41",
+  "igv": "7.09",
+  "total_letras": "CUARENTA Y SEIS CON 50/100 SOLES",
+  "precios_incluyen_impuestos": true,
+  "es_prueba": true,
+  "boleta_url": "https://majocafeteria.com",
+  "items": [
+    {
+      "nombre": "Papaya c/ naranja",
+      "cantidad": 1,
+      "cantidad_modificada": 0,
+      "precio_unitario": "14.00",
+      "precio_modificado": null,
+      "notas_item": null
+    },
+    {
+      "nombre": "Iced Moca",
+      "cantidad": 1,
+      "cantidad_modificada": 0,
+      "precio_unitario": "14.00",
+      "precio_modificado": null,
+      "notas_item": null
+    },
+    {
+      "nombre": "Empanada de Italiana",
+      "cantidad": 1,
+      "cantidad_modificada": 0,
+      "precio_unitario": "8.50",
+      "precio_modificado": null,
+      "notas_item": null
+    },
+    {
+      "nombre": "Piña golden",
+      "cantidad": 1,
+      "cantidad_modificada": 0,
+      "precio_unitario": "10.00",
+      "precio_modificado": null,
+      "notas_item": null
+    }
+  ]
+}
