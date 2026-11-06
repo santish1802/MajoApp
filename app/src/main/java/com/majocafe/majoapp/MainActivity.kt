@@ -25,14 +25,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AlertDialog
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
     private lateinit var webView: WebView
-    private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var swipeRefresh: MajoSwipeRefreshLayout
     private lateinit var errorPanel: View
     private lateinit var loadingPanel: View
     private lateinit var pageProgress: ProgressBar
@@ -109,7 +107,16 @@ class MainActivity : AppCompatActivity() {
         // El círculo comienza fuera del área visible y entra tras un arrastre mayor.
         swipeRefresh.setProgressViewOffset(false, (-80 * density).toInt(), (64 * density).toInt())
         swipeRefresh.setDistanceToTriggerSync((96 * density).toInt())
-        swipeRefresh.setOnChildScrollUpCallback { _, _ -> webView.canScrollVertically(-1) }
+        swipeRefresh.attachWebView(webView) {
+            !mainFrameFailed && errorPanel.visibility != View.VISIBLE &&
+                loadingPanel.visibility != View.VISIBLE &&
+                pageProgress.visibility != View.VISIBLE &&
+                !swipeRefresh.isRefreshing &&
+                webView.url?.let {
+                    val uri = Uri.parse(it)
+                    isInternalUrl(uri) && (uri.port == -1 || uri.port == 443)
+                } == true
+        }
         swipeRefresh.setOnRefreshListener { reloadPage(showRefreshIndicator = true) }
         findViewById<Button>(R.id.retryButton).setOnClickListener { reloadPage() }
 
@@ -223,6 +230,8 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onPageStarted(view: WebView, url: String?, favicon: android.graphics.Bitmap?) {
+                // Un permiso de gesto no debe sobrevivir a una navegación.
+                swipeRefresh.invalidateRefreshGesture()
                 // No entregar una selección pendiente a una página distinta.
                 cancelFileUpload()
                 navigationGeneration++
@@ -398,6 +407,7 @@ class MainActivity : AppCompatActivity() {
         javascriptAlert?.dismiss()
         if (::webView.isInitialized) {
             loadingPanel.removeCallbacks(loadingTimeout)
+            swipeRefresh.detachWebView()
             swipeRefresh.removeView(webView)
             webView.stopLoading()
             webView.destroy()

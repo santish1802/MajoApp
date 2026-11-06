@@ -8,6 +8,7 @@ android {
     defaultConfig {
         applicationId = "com.majocafe.majoapp"
         minSdk = 24
+        //noinspection OldTargetApi
         targetSdk = 34
         versionCode = 3
         versionName = "1.2-boleta58"

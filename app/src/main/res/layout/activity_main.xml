@@ -2,12 +2,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/majo_background">
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    <com.majocafe.majoapp.MajoSwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent" android:layout_height="match_parent">
         <WebView android:id="@+id/webView"
             android:layout_width="match_parent" android:layout_height="match_parent" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </com.majocafe.majoapp.MajoSwipeRefreshLayout>
     <ProgressBar android:id="@+id/pageProgress"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent" android:layout_height="3dp"
