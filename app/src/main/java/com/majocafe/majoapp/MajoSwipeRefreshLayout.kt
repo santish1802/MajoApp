@@ -59,7 +59,7 @@ class MajoSwipeRefreshLayout @JvmOverloads constructor(
             // puntero. No puede iniciar un arrastre durante ese evento.
             if (initializingDown || nativeDragCaptured) false
             else !permissionGranted || permissionRevoked ||
-                (!permissionInOverlay && web.canScrollVertically(-1))
+                    (!permissionInOverlay && web.canScrollVertically(-1))
         }
     }
 
@@ -180,7 +180,8 @@ class MajoSwipeRefreshLayout @JvmOverloads constructor(
         // Un desplazamiento inicialmente ascendente u horizontal no puede
         // convertirse en un gesto de recarga tras volver arriba.
         if (dy < -touchSlop || (abs(dx) > touchSlop && abs(dx) > abs(dy)) ||
-            (!permissionInOverlay && webView?.canScrollVertically(-1) != false)) {
+            (permissionGranted && !permissionInOverlay &&
+                    webView?.canScrollVertically(-1) != false)) {
             revokePermission()
         }
     }

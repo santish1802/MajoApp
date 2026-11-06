@@ -109,13 +109,13 @@ class MainActivity : AppCompatActivity() {
         swipeRefresh.setDistanceToTriggerSync((96 * density).toInt())
         swipeRefresh.attachWebView(webView) {
             !mainFrameFailed && errorPanel.visibility != View.VISIBLE &&
-                loadingPanel.visibility != View.VISIBLE &&
-                pageProgress.visibility != View.VISIBLE &&
-                !swipeRefresh.isRefreshing &&
-                webView.url?.let {
-                    val uri = Uri.parse(it)
-                    isInternalUrl(uri) && (uri.port == -1 || uri.port == 443)
-                } == true
+                    loadingPanel.visibility != View.VISIBLE &&
+                    pageProgress.visibility != View.VISIBLE &&
+                    !swipeRefresh.isRefreshing &&
+                    webView.url?.let {
+                        val uri = Uri.parse(it)
+                        isInternalUrl(uri) && (uri.port == -1 || uri.port == 443)
+                    } == true
         }
         swipeRefresh.setOnRefreshListener { reloadPage(showRefreshIndicator = true) }
         findViewById<Button>(R.id.retryButton).setOnClickListener { reloadPage() }
@@ -183,7 +183,23 @@ class MainActivity : AppCompatActivity() {
                     View.VISIBLE else View.GONE
             }
 
+            override fun onJsBeforeUnload(
+                view: WebView,
+                url: String,
+                message: String,
+                result: JsResult
+            ): Boolean {
+                // Cancelar la salida no garantiza onPageFinished. Detener solo
+                // el indicador; WebView conserva su diálogo y decide si recarga.
+                swipeRefresh.isRefreshing = false
+                swipeRefresh.invalidateRefreshGesture()
+                return super.onJsBeforeUnload(view, url, message, result)
+            }
+
             override fun onJsAlert(view: WebView, url: String, message: String, result: JsResult): Boolean {
+                // Un alert puede interrumpir el flujo de recarga de la web.
+                swipeRefresh.isRefreshing = false
+                swipeRefresh.invalidateRefreshGesture()
                 if (isFinishing || isDestroyed) {
                     result.cancel()
                     return true
@@ -337,8 +353,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun isInternalUrl(uri: Uri): Boolean = uri.scheme == "https" &&
-        (uri.host.equals("majocafeteria.com", ignoreCase = true) ||
-            uri.host.equals("www.majocafeteria.com", ignoreCase = true))
+            (uri.host.equals("majocafeteria.com", ignoreCase = true) ||
+                    uri.host.equals("www.majocafeteria.com", ignoreCase = true))
 
     private fun openExternal(uri: Uri) {
         if (uri.scheme !in setOf("https", "http", "tel", "mailto", "whatsapp", "geo")) {
